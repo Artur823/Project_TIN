@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorites - Movie Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <h1>My Favorites</h1>
+            <div class="user-controls">
+                <div id="userGreeting" class="user-greeting hidden">
+                    <span>Welcome, <span id="usernameDisplay"></span>!</span>
+                    <button onclick="window.location.href='profile.html'">Profile</button>
+                    <button id="logoutButton">Logout</button>
+                </div>
+                <button id="themeToggle" class="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link">All Movies</a>
+            <a href="favorites.html" class="nav-link active">My Favorites</a>
+        </nav>
+    </header>
+
+    <main>
+        <div id="favoritesList" class="movie-grid">
+            <!-- Favorite movie cards will be inserted here by JavaScript -->
+        </div>
+        <div id="noFavorites" class="no-favorites hidden">
+            <p>You haven't added any movies to your favorites yet.</p>
+            <a href="index.html" class="browse-link">Browse Movies</a>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html> 

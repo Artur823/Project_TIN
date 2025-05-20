@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register / Login - Movie Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: #181818;
+            min-height: 100vh;
+            color: #fff;
+        }
+        .centered-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .login-form {
+            background: #222;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px #111;
+            padding: 2rem 2.5rem;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .login-form h1 {
+            color: #e50914;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .login-form input {
+            background: #181818;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .login-form input:focus {
+            border: 1.5px solid #e50914;
+            outline: none;
+        }
+        .login-form button {
+            background-color: #e50914;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 4px;
+            border: none;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .login-form button:hover {
+            background-color: #b0060f;
+        }
+        .error-message {
+            color: #e50914;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="centered-form">
+        <form class="login-form" onsubmit="return false;">
+            <h1>Register / Login</h1>
+            <input type="text" id="loginUsernameInput" placeholder="Enter your username">
+            <input type="password" id="loginPasswordInput" placeholder="Enter your password">
+            <button id="loginPageButton">Register / Login</button>
+            <div id="loginError" class="error-message" style="display:none;"></div>
+        </form>
+    </div>
+    <script>
+        document.getElementById('loginPageButton').addEventListener('click', function() {
+            const username = document.getElementById('loginUsernameInput').value.trim();
+            const password = document.getElementById('loginPasswordInput').value;
+            const errorDiv = document.getElementById('loginError');
+            if (username && password) {
+                const storedPassword = localStorage.getItem('movieAppPass_' + username);
+                if (storedPassword === null) {
+                    // Register new user
+                    localStorage.setItem('movieAppUser', username);
+                    localStorage.setItem('movieAppPass_' + username, password);
+                    window.location.href = 'index.html';
+                } else if (storedPassword === password) {
+                    // Login success
+                    localStorage.setItem('movieAppUser', username);
+                    window.location.href = 'index.html';
+                } else {
+                    // Wrong password
+                    errorDiv.textContent = 'Incorrect password!';
+                    errorDiv.style.display = 'block';
+                }
+            } else {
+                errorDiv.textContent = 'Please enter both username and password!';
+                errorDiv.style.display = 'block';
+            }
+        });
+        if (localStorage.getItem('movieAppUser')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html> 

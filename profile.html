@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Movie Search</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: #181818;
+            min-height: 100vh;
+            color: #fff;
+        }
+        .centered-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .profile-form {
+            background: #222;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px #111;
+            padding: 2rem 2.5rem;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .profile-form h1 {
+            color: #e50914;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .profile-form input {
+            background: #181818;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .profile-form input:focus {
+            border: 1.5px solid #e50914;
+            outline: none;
+        }
+        .profile-form button {
+            background-color: #e50914;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 4px;
+            border: none;
+            padding: 0.7rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .profile-form button:hover {
+            background-color: #b0060f;
+        }
+        .error-message, .success-message {
+            color: #e50914;
+            text-align: center;
+        }
+        .success-message {
+            color: #00c853;
+        }
+    </style>
+</head>
+<body>
+    <div class="centered-form">
+        <form class="profile-form" onsubmit="return false;">
+            <h1>Profile</h1>
+            <div>
+                <label>Current username:</label>
+                <div id="currentUsername" style="margin-bottom:1.2rem; color:#fff; font-weight:bold;"></div>
+            </div>
+            <label for="newUsername">Change username:</label>
+            <input type="text" id="newUsername" placeholder="New username">
+            <button id="changeUsernameBtn">Change Username</button>
+            <label for="oldPassword">Old password:</label>
+            <input type="password" id="oldPassword" placeholder="Old password">
+            <label for="newPassword">New password:</label>
+            <input type="password" id="newPassword" placeholder="New password">
+            <button id="changePasswordBtn">Change Password</button>
+            <div id="profileMessage" class="error-message" style="display:none;"></div>
+            <div id="profileSuccess" class="success-message" style="display:none;"></div>
+            <button onclick="window.location.href='index.html'">Back to Movies</button>
+        </form>
+    </div>
+    <script>
+        const currentUser = localStorage.getItem('movieAppUser');
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+        document.getElementById('currentUsername').textContent = currentUser;
+        document.getElementById('changeUsernameBtn').onclick = function() {
+            const newUsername = document.getElementById('newUsername').value.trim();
+            const message = document.getElementById('profileMessage');
+            const success = document.getElementById('profileSuccess');
+            message.style.display = 'none';
+            success.style.display = 'none';
+            if (!newUsername) {
+                message.textContent = 'Enter a new username!';
+                message.style.display = 'block';
+                return;
+            }
+            if (localStorage.getItem('movieAppPass_' + newUsername)) {
+                message.textContent = 'This username is already taken!';
+                message.style.display = 'block';
+                return;
+            }
+            const oldPass = localStorage.getItem('movieAppPass_' + currentUser);
+            const oldFavs = localStorage.getItem('movieAppFavorites_' + currentUser);
+            localStorage.setItem('movieAppPass_' + newUsername, oldPass);
+            if (oldFavs) localStorage.setItem('movieAppFavorites_' + newUsername, oldFavs);
+            localStorage.removeItem('movieAppPass_' + currentUser);
+            localStorage.removeItem('movieAppFavorites_' + currentUser);
+            localStorage.setItem('movieAppUser', newUsername);
+            document.getElementById('currentUsername').textContent = newUsername;
+            success.textContent = 'Username changed!';
+            success.style.display = 'block';
+            setTimeout(() => window.location.reload(), 1200);
+        };
+        document.getElementById('changePasswordBtn').onclick = function() {
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const message = document.getElementById('profileMessage');
+            const success = document.getElementById('profileSuccess');
+            message.style.display = 'none';
+            success.style.display = 'none';
+            if (!oldPassword || !newPassword) {
+                message.textContent = 'Fill in both password fields!';
+                message.style.display = 'block';
+                return;
+            }
+            const storedPassword = localStorage.getItem('movieAppPass_' + currentUser);
+            if (storedPassword !== oldPassword) {
+                message.textContent = 'Old password is incorrect!';
+                message.style.display = 'block';
+                return;
+            }
+            localStorage.setItem('movieAppPass_' + currentUser, newPassword);
+            success.textContent = 'Password changed!';
+            success.style.display = 'block';
+            document.getElementById('oldPassword').value = '';
+            document.getElementById('newPassword').value = '';
+        };
+    </script>
+</body>
+</html>

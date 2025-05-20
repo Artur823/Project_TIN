@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <h1>Movie Search</h1>
+            <div class="user-controls">
+                <div id="userGreeting" class="user-greeting hidden">
+                    <span>Welcome, <span id="usernameDisplay"></span>!</span>
+                    <button onclick="window.location.href='profile.html'">Profile</button>
+                    <button id="logoutButton">Logout</button>
+                </div>
+                <button id="registerButton" class="register-btn">Register</button>
+                <button id="themeToggle" class="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search movies...">
+            <select id="genreFilter">
+                <option value="">All Genres</option>
+            </select>
+            <select id="ratingFilter">
+                <option value="">All Ratings</option>
+                <option value="5">5+</option>
+                <option value="6">6+</option>
+                <option value="7">7+</option>
+                <option value="8">8+</option>
+            </select>
+            <button id="upcomingBtn">Upcoming</button>
+        </div>
+        <nav class="main-nav">
+            <a href="index.html" class="nav-link active">All Movies</a>
+            <a href="favorites.html" class="nav-link">My Favorites</a>
+        </nav>
+    </header>
+
+    <main>
+        <div id="movieList" class="movie-grid">
+            <!-- Movie cards will be inserted here by JavaScript -->
+        </div>
+        <div style="display: flex; justify-content: center; margin: 2rem 0;">
+            <button id="showMoreBtn" style="display:none;">Show More</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // Register button always visible if not logged in
+        document.getElementById('registerButton').onclick = function() {
+            window.location.href = 'login.html';
+        };
+    </script>
+</body>
+</html> 
