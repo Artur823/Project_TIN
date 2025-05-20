@@ -201,7 +201,7 @@ function updateThemeButton() {
 // Toggle favorite for the current user and update UI immediately
 function toggleFavorite(movieId) {
     if (!currentUser) {
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return;
     }
     if (favorites.has(movieId)) {
@@ -224,7 +224,7 @@ function updateFavoritesUI() {
     });
 
     // Update favorites page if we're on it
-    if (window.location.pathname.includes('favorites.html')) {
+    if (window.location.pathname.includes('favorites')) {
         displayFavorites();
     }
 }
@@ -258,7 +258,7 @@ function createMovieCard(movie) {
     }
     
     card.addEventListener('click', () => {
-        window.location.href = `movie-details.html?id=${movie.id}`;
+        window.location.href = `movie-details?id=${movie.id}`;
     });
     
     return card;
@@ -465,10 +465,42 @@ async function displayMovieDetails() {
     }
 }
 
+// Fetch favorite movies by their IDs
+async function fetchFavoriteMovies() {
+    if (!currentUser) return [];
+    
+    const savedFavorites = localStorage.getItem(getFavoritesKey());
+    if (!savedFavorites) return [];
+    
+    const favoriteIds = JSON.parse(savedFavorites);
+    const fetchedMovies = [];
+    
+    for (const id of favoriteIds) {
+        try {
+            const movie = await fetchMovieDetails(id);
+            if (movie) {
+                fetchedMovies.push({
+                    id: id,
+                    title: movie.title,
+                    year: movie.year,
+                    poster: movie.poster,
+                    overview: movie.overview,
+                    rating: movie.rating,
+                    genres: movie.genres
+                });
+            }
+        } catch (error) {
+            console.error(`Ошибка при загрузке фильма с ID ${id}:`, error);
+        }
+    }
+    
+    return fetchedMovies;
+}
+
 // Display favorites
 function displayFavorites() {
     if (!currentUser) {
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return;
     }
     const favoritesList = document.getElementById('favoritesList');
@@ -510,11 +542,16 @@ async function init() {
     const themeToggle = document.getElementById('themeToggle');
     if (logoutButton) logoutButton.addEventListener('click', handleLogout);
     if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-    if (window.location.pathname.includes('movie-details.html')) {
+    
+    // Проверяем как с расширением .html, так и без него
+    if (window.location.pathname.includes('movie-details')) {
         await displayMovieDetails();
-    } else if (window.location.pathname.includes('favorites.html')) {
-        await fetchMovies();
-        displayFavorites();
+    } else if (window.location.pathname.includes('favorites')) {
+        // Новая логика для страницы избранных
+        loadUserFavorites(); // загружаем ID избранных фильмов
+        const favoriteMovies = await fetchFavoriteMovies(); // загружаем данные по этим ID
+        movies = favoriteMovies; // устанавливаем загруженные данные в массив movies
+        displayFavorites(); // отображаем избранные фильмы
     } else {
         loadFiltersFromStorage();
         isUpcomingMode = (lastMode === 'upcoming');
@@ -552,4 +589,4 @@ async function init() {
 }
 
 // Initialize when the DOM is loaded
-document.addEventListener('DOMContentLoaded', init); 
+document.addEventListener('DOMContentLoaded', init);
